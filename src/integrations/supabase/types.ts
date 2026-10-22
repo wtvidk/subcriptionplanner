@@ -14,7 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      reminder_reads: {
+        Row: {
+          profile_id: string
+          read_at: string
+          reminder_key: string
+        }
+        Insert: {
+          profile_id: string
+          read_at?: string
+          reminder_key: string
+        }
+        Update: {
+          profile_id?: string
+          read_at?: string
+          reminder_key?: string
+        }
+        Relationships: []
+      }
+      reminder_settings: {
+        Row: {
+          browser_notifications: boolean
+          display_name: string
+          intervals: number[]
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          browser_notifications?: boolean
+          display_name?: string
+          intervals?: number[]
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          browser_notifications?: boolean
+          display_name?: string
+          intervals?: number[]
+          profile_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          autopay: boolean
+          billing_interval: string
+          cancelled_at: string | null
+          category: string
+          created_at: string
+          id: string
+          interval_months: number
+          is_custom: boolean
+          next_renewal: string
+          notes: string | null
+          plan_name: string
+          price: number
+          profile_id: string
+          service_id: string | null
+          service_name: string
+          start_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          autopay?: boolean
+          billing_interval: string
+          cancelled_at?: string | null
+          category: string
+          created_at?: string
+          id?: string
+          interval_months?: number
+          is_custom?: boolean
+          next_renewal: string
+          notes?: string | null
+          plan_name: string
+          price: number
+          profile_id?: string
+          service_id?: string | null
+          service_name: string
+          start_date: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          autopay?: boolean
+          billing_interval?: string
+          cancelled_at?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          interval_months?: number
+          is_custom?: boolean
+          next_renewal?: string
+          notes?: string | null
+          plan_name?: string
+          price?: number
+          profile_id?: string
+          service_id?: string | null
+          service_name?: string
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
