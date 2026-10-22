@@ -1,8 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import {
   buildReminders, cancelledHistory, expenseSummary, intervalToMonths, rollForward, sortSubs, toView,
-  todayISO, upcomingRenewals, validateSub, type SortKey, type Sub, type SubInput,
+  todayISO, upcomingRenewals, validateSub, searchCatalogue, type SortKey, type Sub, type SubInput,
 } from "./planner-core";
+
+export const searchServices = createServerFn({ method: "GET" })
+  .inputValidator((d: { q: string }) => ({ q: String(d.q ?? "").slice(0, 60) }))
+  .handler(async ({ data }) => searchCatalogue(data.q));
 
 const PROFILE = "demo"; // demo profile for the college project
 
