@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -154,7 +154,7 @@ export function SubscriptionDialog({ target, onClose }: { target: DialogTarget |
                 ["Monthly equivalent", eq ? inr(eq.monthly) : "—"], ["Yearly equivalent", eq ? inr(eq.yearly) : "—"],
                 ["Start date", dateLabel(input.start_date)], ["Next renewal", dateLabel(input.next_renewal)],
                 ["Autopay", input.autopay ? "ON" : "OFF"],
-              ].map(([k, v]) => (<><dt key={k} className="text-muted-foreground">{k}</dt><dd className="text-right font-medium">{v}</dd></>))}
+              ].map(([k, v]) => (<Fragment key={k}><dt className="text-muted-foreground">{k}</dt><dd className="text-right font-medium">{v}</dd></Fragment>))}
             </dl>
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1" onClick={() => setStep("form")}>Back</Button>
