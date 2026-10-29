@@ -14,10 +14,9 @@ const ctx = (c: { supabase: unknown; userId: string; claims?: unknown }): Ctx =>
   const name = [m.name, m.full_name].find((x) => typeof x === "string" && x.trim()) as string | undefined;
   return { sb: c.supabase as SupabaseClient<Database>, uid: c.userId, name: name?.trim().slice(0, 40) };
 };
-const authed = { GET: () => createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]), POST: () => createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]) };
 
 export const searchServices = createServerFn({ method: "GET" })
-  .inputValidator((d: { q: string }) => ({ q: String(d.q ?? "").slice(0, 60) }))
+  .validator((d: { q: string }) => ({ q: String(d.q ?? "").slice(0, 60) }))
   .handler(async ({ data }) => searchCatalogue(data.q));
 
 async function loadAll({ sb, uid }: Ctx) {
@@ -47,7 +46,7 @@ async function loadReminders(c: Ctx, subs: Awaited<ReturnType<typeof loadAll>>) 
   return { settings, reminders: buildReminders(subs.filter((s) => s.status === "active"), settings.intervals, new Set((reads ?? []).map((r) => r.reminder_key))) };
 }
 
-export const getDashboard = authed.GET().handler(async ({ context }) => {
+export const getDashboard = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
   const c = ctx(context); const subs = await loadAll(c);
   const active = subs.filter((s) => s.status === "active");
   const exp = expenseSummary(subs);
@@ -60,8 +59,8 @@ export const getDashboard = authed.GET().handler(async ({ context }) => {
   };
 });
 
-export const listSubscriptions = authed.GET()
-  .inputValidator((d: { sort?: SortKey; category?: string; billing?: string; autopay?: string }) => d)
+export const listSubscriptions = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth])
+  .validator((d: { sort?: SortKey; category?: string; billing?: string; autopay?: string }) => d)
   .handler(async ({ data, context }) => {
     let subs = (await loadAll(ctx(context))).filter((s) => s.status === "active");
     if (data.category) subs = subs.filter((s) => s.category === data.category);
@@ -81,7 +80,7 @@ function normalise(i: SubInput) {
   };
 }
 
-export const createSubscription = authed.POST().inputValidator((d: SubInput) => d).handler(async ({ data, context }) => {
+export const createSubscription = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((d: SubInput) => d).handler(async ({ data, context }) => {
   const err = validateSub(data); if (err) throw new Error(err);
   const { sb, uid } = ctx(context); const row = normalise(data);
   const { data: dup } = await sb.from("subscriptions").select("id").eq("profile_id", uid).eq("status", "active")
@@ -92,7 +91,7 @@ export const createSubscription = authed.POST().inputValidator((d: SubInput) => 
   return { ok: true };
 });
 
-export const updateSubscription = authed.POST().inputValidator((d: { id: string; input: SubInput }) => d).handler(async ({ data, context }) => {
+export const updateSubscription = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((d: { id: string; input: SubInput }) => d).handler(async ({ data, context }) => {
   const err = validateSub(data.input); if (err) throw new Error(err);
   const { sb, uid } = ctx(context);
   const { service_id: _s, is_custom: _c, ...row } = normalise(data.input);
@@ -101,41 +100,41 @@ export const updateSubscription = authed.POST().inputValidator((d: { id: string;
   return { ok: true };
 });
 
-export const setAutopay = authed.POST().inputValidator((d: { id: string; autopay: boolean }) => d).handler(async ({ data, context }) => {
+export const setAutopay = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((d: { id: string; autopay: boolean }) => d).handler(async ({ data, context }) => {
   const { sb, uid } = ctx(context);
   const { error } = await sb.from("subscriptions").update({ autopay: !!data.autopay }).eq("id", data.id).eq("profile_id", uid);
   if (error) throw new Error("Could not update autopay.");
   return { ok: true };
 });
 
-export const cancelSubscription = authed.POST().inputValidator((d: { id: string }) => d).handler(async ({ data, context }) => {
+export const cancelSubscription = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((d: { id: string }) => d).handler(async ({ data, context }) => {
   const { sb, uid } = ctx(context);
   const { data: rows, error } = await sb.from("subscriptions").update({ status: "cancelled", cancelled_at: todayISO() }).eq("id", data.id).eq("profile_id", uid).eq("status", "active").select("id");
   if (error || !rows?.length) throw new Error("Subscription not found or already cancelled.");
   return { ok: true };
 });
 
-export const restoreSubscription = authed.POST().inputValidator((d: { id: string }) => d).handler(async ({ data, context }) => {
+export const restoreSubscription = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((d: { id: string }) => d).handler(async ({ data, context }) => {
   const { sb, uid } = ctx(context);
   const { data: rows, error } = await sb.from("subscriptions").update({ status: "active", cancelled_at: null }).eq("id", data.id).eq("profile_id", uid).eq("status", "cancelled").select("id");
   if (error || !rows?.length) throw new Error("Subscription not found or already active.");
   return { ok: true };
 });
 
-export const getHistory = authed.GET().handler(async ({ context }) => cancelledHistory(await loadAll(ctx(context))));
-export const getExpenses = authed.GET().handler(async ({ context }) => expenseSummary(await loadAll(ctx(context))));
-export const getReminders = authed.GET().handler(async ({ context }) => { const c = ctx(context); return loadReminders(c, await loadAll(c)); });
-export const getSettings = authed.GET().handler(async ({ context }) => loadSettings(ctx(context)));
+export const getHistory = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => cancelledHistory(await loadAll(ctx(context))));
+export const getExpenses = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => expenseSummary(await loadAll(ctx(context))));
+export const getReminders = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => { const c = ctx(context); return loadReminders(c, await loadAll(c)); });
+export const getSettings = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => loadSettings(ctx(context)));
 
-export const markRemindersRead = authed.POST().inputValidator((d: { keys: string[] }) => d).handler(async ({ data, context }) => {
+export const markRemindersRead = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((d: { keys: string[] }) => d).handler(async ({ data, context }) => {
   if (!data.keys.length) return { ok: true };
   const { sb, uid } = ctx(context);
   await sb.from("reminder_reads").upsert(data.keys.slice(0, 200).map((k) => ({ profile_id: uid, reminder_key: String(k) })));
   return { ok: true };
 });
 
-export const updateSettings = authed.POST()
-  .inputValidator((d: { intervals: number[]; browser_notifications: boolean; display_name: string }) => d)
+export const updateSettings = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .validator((d: { intervals: number[]; browser_notifications: boolean; display_name: string }) => d)
   .handler(async ({ data, context }) => {
     const c = ctx(context);
     const intervals = [...new Set(data.intervals.map(Number))].filter((n) => Number.isInteger(n) && n >= 0 && n <= 60);
