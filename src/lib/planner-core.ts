@@ -32,7 +32,7 @@ export function rollForward(renewal: string, months: number, today: string, anch
   let r = renewal; let k = 0;
   while (daysBetween(today, r) < 0 && k < 1200) {
     k++; r = addMonths(renewal, months * k);
-    if (anchorDay) { const [y, m] = r.split("-").map(Number); r = fmt(Date.UTC(y, m - 1, Math.min(anchorDay, daysInMonth(y, m - 1)))); }
+    if (anchorDay) { const [y = 0, m = 1] = r.split("-").map(Number); r = fmt(Date.UTC(y, m - 1, Math.min(anchorDay, daysInMonth(y, m - 1)))); }
   }
   return r;
 }
@@ -77,10 +77,10 @@ export const getService = (id: string) => serviceIndex.get(id);
 export function searchCatalogue(q: string): Service[] {
   const words = q.toLowerCase().split(/[^a-z0-9+]+/).filter(Boolean);
   if (!words.length) return [];
-  let result: Set<string> | null = null;
+  let result = null as Set<string> | null;
   for (const w of words) {
     const ids = trie.prefix(w);
-    result = result ? new Set([...result].filter((x) => ids.has(x))) : new Set(ids);
+    result = result ? new Set([...result].filter((x: string) => ids.has(x))) : new Set(ids);
   }
   return mergeSort([...(result ?? [])].map((id) => serviceIndex.get(id)!), (a, b) => a.name.localeCompare(b.name));
 }
