@@ -11,19 +11,20 @@ export interface Sub {
 export interface SubView extends Sub { monthly: number; yearly: number; days_remaining: number }
 
 // ---------- Dates (UTC, calendar-correct) ----------
+const ymd = (s: string): [number, number, number] => { const p = s.split("-").map(Number); return [p[0] ?? 0, p[1] ?? 1, p[2] ?? 1]; };
 export const isValidDate = (s: string) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
-  const [y, m, d] = s.split("-").map(Number);
+  const [y, m, d] = ymd(s);
   const dt = new Date(Date.UTC(y, m - 1, d));
   return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
 };
-const toUTC = (s: string) => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); };
+const toUTC = (s: string) => { const [y, m, d] = ymd(s); return Date.UTC(y, m - 1, d); };
 const fmt = (t: number) => new Date(t).toISOString().slice(0, 10);
 export const daysBetween = (from: string, to: string) => Math.round((toUTC(to) - toUTC(from)) / 86400000);
 export const daysInMonth = (y: number, m0: number) => new Date(Date.UTC(y, m0 + 1, 0)).getUTCDate();
 /** Adds months, clamping to month end (31 Jan + 1 month = 28/29 Feb). */
 export function addMonths(s: string, n: number): string {
-  const [y, m, d] = s.split("-").map(Number);
+  const [y, m, d] = ymd(s);
   const total = (m - 1) + n; const ny = y + Math.floor(total / 12); const nm = ((total % 12) + 12) % 12;
   return fmt(Date.UTC(ny, nm, Math.min(d, daysInMonth(ny, nm))));
 }
@@ -32,7 +33,7 @@ export function rollForward(renewal: string, months: number, today: string, anch
   let r = renewal; let k = 0;
   while (daysBetween(today, r) < 0 && k < 1200) {
     k++; r = addMonths(renewal, months * k);
-    if (anchorDay) { const [y = 0, m = 1] = r.split("-").map(Number); r = fmt(Date.UTC(y, m - 1, Math.min(anchorDay, daysInMonth(y, m - 1)))); }
+    if (anchorDay) { const [y, m] = ymd(r); r = fmt(Date.UTC(y, m - 1, Math.min(anchorDay, daysInMonth(y, m - 1)))); }
   }
   return r;
 }
