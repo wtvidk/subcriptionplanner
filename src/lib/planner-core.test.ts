@@ -14,7 +14,7 @@ describe("planner rules", () => {
   it("search is case-insensitive and partial", () => expect(searchCatalogue("NETF").map((s) => s.name)).toContain("Netflix"));
   it("search by plan name", () => expect(searchCatalogue("mega fan").map((s) => s.name)).toContain("Crunchyroll"));
   it("Canva in AI and Design", () => expect(SERVICES.find((s) => s.name === "Canva")!.categoryIds).toEqual(["ai", "design"]));
-  it("reminder uses tightest interval", () => expect(buildReminders([sub({ days_remaining: 2 })], [7, 3, 1, 0], new Set())[0].interval).toBe(3));
+  it("reminder uses tightest interval", () => expect(buildReminders([sub({ days_remaining: 2 })], [7, 3, 1, 0], new Set())[0]!.interval).toBe(3));
   it("no reminder beyond 7 days", () => expect(buildReminders([sub({ days_remaining: 8 })], [7, 3, 1, 0], new Set())).toHaveLength(0));
   it("negative price rejected", () => expect(validateSub({ service_name: "a", category: "b", plan_name: "c", price: -1, billing_interval: "month", start_date: "2026-01-01", next_renewal: "2026-02-01", autopay: false })).not.toBeNull());
 });

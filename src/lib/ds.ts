@@ -10,11 +10,11 @@ export class HashTable<V> {
   constructor(private capacity = 64) { this.buckets = Array.from({ length: capacity }, () => []); }
   private hash(key: string) { let h = 5381; for (let i = 0; i < key.length; i++) h = ((h << 5) + h + key.charCodeAt(i)) | 0; return Math.abs(h) % this.capacity; }
   set(key: string, value: V) {
-    const b = this.buckets[this.hash(key)];
+    const b = this.buckets[this.hash(key)]!;
     const e = b.find((x) => x[0] === key);
     if (e) e[1] = value; else { b.push([key, value]); this.count++; if (this.count > this.capacity * 0.75) this.resize(); }
   }
-  get(key: string): V | undefined { return this.buckets[this.hash(key)].find((x) => x[0] === key)?.[1]; }
+  get(key: string): V | undefined { return this.buckets[this.hash(key)]!.find((x) => x[0] === key)?.[1]; }
   has(key: string) { return this.get(key) !== undefined; }
   get size() { return this.count; }
   private resize() {
@@ -30,13 +30,13 @@ export class MinHeap<T> {
   constructor(private cmp: (x: T, y: T) => number) {}
   get size() { return this.a.length; }
   peek() { return this.a[0]; }
-  push(v: T) { const a = this.a; a.push(v); let i = a.length - 1; while (i > 0) { const p = (i - 1) >> 1; if (this.cmp(a[i], a[p]) >= 0) break; [a[i], a[p]] = [a[p], a[i]]; i = p; } }
+  push(v: T) { const a = this.a; a.push(v); let i = a.length - 1; while (i > 0) { const p = (i - 1) >> 1; if (this.cmp(a[i]!, a[p]!) >= 0) break; [a[i], a[p]] = [a[p]!, a[i]!]; i = p; } }
   pop(): T | undefined {
     const a = this.a; if (!a.length) return undefined;
-    const top = a[0]; const last = a.pop()!;
+    const top = a[0]!; const last = a.pop()!;
     if (a.length) { a[0] = last; let i = 0; for (;;) { const l = 2 * i + 1, r = l + 1; let m = i;
-      if (l < a.length && this.cmp(a[l], a[m]) < 0) m = l; if (r < a.length && this.cmp(a[r], a[m]) < 0) m = r;
-      if (m === i) break; [a[i], a[m]] = [a[m], a[i]]; i = m; } }
+      if (l < a.length && this.cmp(a[l]!, a[m]!) < 0) m = l; if (r < a.length && this.cmp(a[r]!, a[m]!) < 0) m = r;
+      if (m === i) break; [a[i], a[m]] = [a[m]!, a[i]!]; i = m; } }
     return top;
   }
 }
@@ -64,7 +64,7 @@ export function mergeSort<T>(arr: T[], cmp: (a: T, b: T) => number): T[] {
   const mid = arr.length >> 1;
   const l = mergeSort(arr.slice(0, mid), cmp), r = mergeSort(arr.slice(mid), cmp);
   const out: T[] = []; let i = 0, j = 0;
-  while (i < l.length && j < r.length) out.push(cmp(l[i], r[j]) <= 0 ? l[i++] : r[j++]);
+  while (i < l.length && j < r.length) out.push(cmp(l[i]!, r[j]!) <= 0 ? l[i++]! : r[j++]!);
   return out.concat(l.slice(i), r.slice(j));
 }
 
