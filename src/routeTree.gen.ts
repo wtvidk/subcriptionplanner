@@ -9,91 +9,91 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as BrowseRouteImport } from './routes/browse'
-import { Route as CategoriesRouteImport } from './routes/categories'
-import { Route as ExpensesRouteImport } from './routes/expenses'
-import { Route as HistoryRouteImport } from './routes/history'
-import { Route as RemindersRouteImport } from './routes/reminders'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedBrowseRouteImport } from './routes/_authenticated/browse'
+import { Route as AuthenticatedCategoriesRouteImport } from './routes/_authenticated/categories'
+import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
+import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
+import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedSubscriptionsRouteImport } from './routes/_authenticated/subscriptions'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BrowseRoute = BrowseRouteImport.update({
-  id: '/browse',
+const AuthenticatedBrowseRoute = AuthenticatedBrowseRouteImport.update({
+  id: '/_authenticated/browse',
   path: '/browse',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CategoriesRoute = CategoriesRouteImport.update({
-  id: '/categories',
+const AuthenticatedCategoriesRoute = AuthenticatedCategoriesRouteImport.update({
+  id: '/_authenticated/categories',
   path: '/categories',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExpensesRoute = ExpensesRouteImport.update({
-  id: '/expenses',
+const AuthenticatedExpensesRoute = AuthenticatedExpensesRouteImport.update({
+  id: '/_authenticated/expenses',
   path: '/expenses',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HistoryRoute = HistoryRouteImport.update({
-  id: '/history',
+const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
+  id: '/_authenticated/history',
   path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RemindersRoute = RemindersRouteImport.update({
-  id: '/reminders',
+const AuthenticatedRemindersRoute = AuthenticatedRemindersRouteImport.update({
+  id: '/_authenticated/reminders',
   path: '/reminders',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/_authenticated/settings',
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SubscriptionsRoute = SubscriptionsRouteImport.update({
-  id: '/subscriptions',
-  path: '/subscriptions',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedSubscriptionsRoute =
+  AuthenticatedSubscriptionsRouteImport.update({
+    id: '/_authenticated/subscriptions',
+    path: '/subscriptions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/browse': typeof BrowseRoute
-  '/categories': typeof CategoriesRoute
-  '/expenses': typeof ExpensesRoute
-  '/history': typeof HistoryRoute
-  '/reminders': typeof RemindersRoute
-  '/settings': typeof SettingsRoute
-  '/subscriptions': typeof SubscriptionsRoute
+  '/browse': typeof AuthenticatedBrowseRoute
+  '/categories': typeof AuthenticatedCategoriesRoute
+  '/expenses': typeof AuthenticatedExpensesRoute
+  '/history': typeof AuthenticatedHistoryRoute
+  '/reminders': typeof AuthenticatedRemindersRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/subscriptions': typeof AuthenticatedSubscriptionsRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/browse': typeof BrowseRoute
-  '/categories': typeof CategoriesRoute
-  '/expenses': typeof ExpensesRoute
-  '/history': typeof HistoryRoute
-  '/reminders': typeof RemindersRoute
-  '/settings': typeof SettingsRoute
-  '/subscriptions': typeof SubscriptionsRoute
+  '/browse': typeof AuthenticatedBrowseRoute
+  '/categories': typeof AuthenticatedCategoriesRoute
+  '/expenses': typeof AuthenticatedExpensesRoute
+  '/history': typeof AuthenticatedHistoryRoute
+  '/reminders': typeof AuthenticatedRemindersRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/subscriptions': typeof AuthenticatedSubscriptionsRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/browse': typeof BrowseRoute
-  '/categories': typeof CategoriesRoute
-  '/expenses': typeof ExpensesRoute
-  '/history': typeof HistoryRoute
-  '/reminders': typeof RemindersRoute
-  '/settings': typeof SettingsRoute
-  '/subscriptions': typeof SubscriptionsRoute
+  '/_authenticated/browse': typeof AuthenticatedBrowseRoute
+  '/_authenticated/categories': typeof AuthenticatedCategoriesRoute
+  '/_authenticated/expenses': typeof AuthenticatedExpensesRoute
+  '/_authenticated/history': typeof AuthenticatedHistoryRoute
+  '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/subscriptions': typeof AuthenticatedSubscriptionsRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/browse'
     | '/categories'
     | '/expenses'
@@ -101,9 +101,9 @@ export interface FileRouteTypes {
     | '/reminders'
     | '/settings'
     | '/subscriptions'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/browse'
     | '/categories'
     | '/expenses'
@@ -111,99 +111,100 @@ export interface FileRouteTypes {
     | '/reminders'
     | '/settings'
     | '/subscriptions'
+    | '/'
   id:
     | '__root__'
-    | '/'
-    | '/browse'
-    | '/categories'
-    | '/expenses'
-    | '/history'
-    | '/reminders'
-    | '/settings'
-    | '/subscriptions'
+    | '/_authenticated/browse'
+    | '/_authenticated/categories'
+    | '/_authenticated/expenses'
+    | '/_authenticated/history'
+    | '/_authenticated/reminders'
+    | '/_authenticated/settings'
+    | '/_authenticated/subscriptions'
+    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  BrowseRoute: typeof BrowseRoute
-  CategoriesRoute: typeof CategoriesRoute
-  ExpensesRoute: typeof ExpensesRoute
-  HistoryRoute: typeof HistoryRoute
-  RemindersRoute: typeof RemindersRoute
-  SettingsRoute: typeof SettingsRoute
-  SubscriptionsRoute: typeof SubscriptionsRoute
+  AuthenticatedBrowseRoute: typeof AuthenticatedBrowseRoute
+  AuthenticatedCategoriesRoute: typeof AuthenticatedCategoriesRoute
+  AuthenticatedExpensesRoute: typeof AuthenticatedExpensesRoute
+  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
+  AuthenticatedRemindersRoute: typeof AuthenticatedRemindersRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSubscriptionsRoute: typeof AuthenticatedSubscriptionsRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/browse': {
-      id: '/browse'
+    '/_authenticated/browse': {
+      id: '/_authenticated/browse'
       path: '/browse'
       fullPath: '/browse'
-      preLoaderRoute: typeof BrowseRouteImport
+      preLoaderRoute: typeof AuthenticatedBrowseRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/categories': {
-      id: '/categories'
+    '/_authenticated/categories': {
+      id: '/_authenticated/categories'
       path: '/categories'
       fullPath: '/categories'
-      preLoaderRoute: typeof CategoriesRouteImport
+      preLoaderRoute: typeof AuthenticatedCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/expenses': {
-      id: '/expenses'
+    '/_authenticated/expenses': {
+      id: '/_authenticated/expenses'
       path: '/expenses'
       fullPath: '/expenses'
-      preLoaderRoute: typeof ExpensesRouteImport
+      preLoaderRoute: typeof AuthenticatedExpensesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/history': {
-      id: '/history'
+    '/_authenticated/history': {
+      id: '/_authenticated/history'
       path: '/history'
       fullPath: '/history'
-      preLoaderRoute: typeof HistoryRouteImport
+      preLoaderRoute: typeof AuthenticatedHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reminders': {
-      id: '/reminders'
+    '/_authenticated/reminders': {
+      id: '/_authenticated/reminders'
       path: '/reminders'
       fullPath: '/reminders'
-      preLoaderRoute: typeof RemindersRouteImport
+      preLoaderRoute: typeof AuthenticatedRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings': {
-      id: '/settings'
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/subscriptions': {
-      id: '/subscriptions'
+    '/_authenticated/subscriptions': {
+      id: '/_authenticated/subscriptions'
       path: '/subscriptions'
       fullPath: '/subscriptions'
-      preLoaderRoute: typeof SubscriptionsRouteImport
+      preLoaderRoute: typeof AuthenticatedSubscriptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  BrowseRoute: BrowseRoute,
-  CategoriesRoute: CategoriesRoute,
-  ExpensesRoute: ExpensesRoute,
-  HistoryRoute: HistoryRoute,
-  RemindersRoute: RemindersRoute,
-  SettingsRoute: SettingsRoute,
-  SubscriptionsRoute: SubscriptionsRoute,
+  AuthenticatedBrowseRoute: AuthenticatedBrowseRoute,
+  AuthenticatedCategoriesRoute: AuthenticatedCategoriesRoute,
+  AuthenticatedExpensesRoute: AuthenticatedExpensesRoute,
+  AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
+  AuthenticatedRemindersRoute: AuthenticatedRemindersRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSubscriptionsRoute: AuthenticatedSubscriptionsRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
