@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { inr } from "@/lib/format";
 
-export const Route = createFileRoute("/browse")({
+export const Route = createFileRoute("/_authenticated/browse")({
   validateSearch: (s: Record<string, unknown>) => ({ category: typeof s.category === "string" ? s.category : undefined }),
   head: () => ({ meta: [
     { title: "Browse Services — Subscription Planner" },

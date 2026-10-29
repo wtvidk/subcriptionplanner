@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { QK } from "@/lib/format";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({ meta: [
     { title: "Settings — Subscription Planner" },
     { name: "description", content: "Set your name, reminder intervals and browser notifications." },

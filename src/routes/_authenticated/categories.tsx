@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/AppShell";
 import { CatIcon } from "./browse";
 import { inr, QK } from "@/lib/format";
 
-export const Route = createFileRoute("/categories")({
+export const Route = createFileRoute("/_authenticated/categories")({
   head: () => ({ meta: [
     { title: "Categories — Subscription Planner" },
     { name: "description", content: "Ten service categories with your subscription count and monthly spend in each." },

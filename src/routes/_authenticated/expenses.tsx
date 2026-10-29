@@ -7,7 +7,7 @@ import { Empty, PageHeader } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { inr, intervalLabel, QK } from "@/lib/format";
 
-export const Route = createFileRoute("/expenses")({
+export const Route = createFileRoute("/_authenticated/expenses")({
   head: () => ({ meta: [
     { title: "Expense Summary — Subscription Planner" },
     { name: "description", content: "Monthly and yearly equivalent subscription spending, by category, in rupees." },
