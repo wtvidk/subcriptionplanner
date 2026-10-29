@@ -8,10 +8,10 @@ import {
 } from "./planner-core";
 
 // Each signed-in user only reaches their own rows (row-level security on profile_id = user id).
-type Ctx = { sb: SupabaseClient<Database>; uid: string; name?: string };
+type Ctx = { sb: SupabaseClient<Database>; uid: string; name?: string | undefined };
 const ctx = (c: { supabase: unknown; userId: string; claims?: unknown }): Ctx => {
   const m = ((c.claims as { user_metadata?: Record<string, unknown> } | undefined)?.user_metadata ?? {}) as Record<string, unknown>;
-  const name = [m.name, m.full_name].find((x) => typeof x === "string" && x.trim()) as string | undefined;
+  const name = [m["name"], m["full_name"]].find((x) => typeof x === "string" && x.trim()) as string | undefined;
   return { sb: c.supabase as SupabaseClient<Database>, uid: c.userId, name: name?.trim().slice(0, 40) };
 };
 
