@@ -8,8 +8,12 @@ import {
 } from "./planner-core";
 
 // Each signed-in user only reaches their own rows (row-level security on profile_id = user id).
-type Ctx = { sb: SupabaseClient<Database>; uid: string };
-const ctx = (c: { supabase: unknown; userId: string }): Ctx => ({ sb: c.supabase as SupabaseClient<Database>, uid: c.userId });
+type Ctx = { sb: SupabaseClient<Database>; uid: string; name?: string };
+const ctx = (c: { supabase: unknown; userId: string; claims?: unknown }): Ctx => {
+  const m = ((c.claims as { user_metadata?: Record<string, unknown> } | undefined)?.user_metadata ?? {}) as Record<string, unknown>;
+  const name = [m.name, m.full_name].find((x) => typeof x === "string" && x.trim()) as string | undefined;
+  return { sb: c.supabase as SupabaseClient<Database>, uid: c.userId, name: name?.trim().slice(0, 40) };
+};
 const authed = { GET: () => createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]), POST: () => createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]) };
 
 export const searchServices = createServerFn({ method: "GET" })
@@ -29,10 +33,10 @@ async function loadAll({ sb, uid }: Ctx) {
   return rows.map((r) => toView(r, today));
 }
 
-async function loadSettings({ sb, uid }: Ctx) {
+async function loadSettings({ sb, uid, name }: Ctx) {
   const { data } = await sb.from("reminder_settings").select("*").eq("profile_id", uid).maybeSingle();
   if (data) return data;
-  const { data: created, error } = await sb.from("reminder_settings").insert({ profile_id: uid }).select().single();
+  const { data: created, error } = await sb.from("reminder_settings").insert({ profile_id: uid, display_name: name ?? "Friend" }).select().single();
   if (error) throw new Error("Could not load settings.");
   return created;
 }
