@@ -6,7 +6,7 @@ import { AutopayBadge, Empty, PageHeader } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { dateLabel, daysLabel, inr, QK } from "@/lib/format";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({ meta: [
     { title: "Dashboard — Subscription Planner" },
     { name: "description", content: "Your active subscriptions, monthly spend and upcoming renewals at a glance." },

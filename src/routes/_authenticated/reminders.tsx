@@ -6,7 +6,7 @@ import { AutopayBadge, Empty, PageHeader } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { dateLabel, daysLabel, inr, QK } from "@/lib/format";
 
-export const Route = createFileRoute("/reminders")({
+export const Route = createFileRoute("/_authenticated/reminders")({
   head: () => ({ meta: [
     { title: "Renewal Reminders — Subscription Planner" },
     { name: "description", content: "Reminders 7, 3 and 1 day before each renewal, and on the day itself." },

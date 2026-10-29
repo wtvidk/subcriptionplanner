@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { dateLabel, inr, intervalLabel, QK } from "@/lib/format";
 
-export const Route = createFileRoute("/history")({
+export const Route = createFileRoute("/_authenticated/history")({
   head: () => ({ meta: [
     { title: "Cancelled History — Subscription Planner" },
     { name: "description", content: "Every subscription you've cancelled, with original price and dates." },

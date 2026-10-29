@@ -23,7 +23,7 @@ export function SubscriptionDialog({ target, onClose }: { target: DialogTarget |
   const qc = useQueryClient();
   const [step, setStep] = useState<"form" | "review">("form");
   const [f, setF] = useState({
-    serviceName: "", categorySel: CATEGORIES[0].name, categoryOther: "", planSel: OTHER, planName: "",
+    serviceName: "", categorySel: CATEGORIES[0]!.name, categoryOther: "", planSel: OTHER, planName: "",
     price: "", interval: "month", months: "2", start: todayISO(), renewal: addMonths(todayISO(), 1), autopay: false, notes: "",
   });
   const service = target?.mode === "add" ? target.service : undefined;
@@ -40,7 +40,7 @@ export function SubscriptionDialog({ target, onClose }: { target: DialogTarget |
         start: s.start_date, renewal: s.next_renewal, autopay: s.autopay, notes: s.notes ?? "" });
     } else {
       const sv = target.service; const plan = sv?.plans.find((p) => p.id === target.planId) ?? sv?.plans[0];
-      setF({ serviceName: sv?.name ?? "", categorySel: sv ? categoryName(sv.categoryIds[0]) : CATEGORIES[0].name, categoryOther: "",
+      setF({ serviceName: sv?.name ?? "", categorySel: sv ? categoryName(sv.categoryIds[0]!) : CATEGORIES[0]!.name, categoryOther: "",
         planSel: plan?.id ?? OTHER, planName: plan?.name ?? "", price: plan ? String(plan.price) : "", interval: plan?.interval ?? "month",
         months: "2", start: t, renewal: addMonths(t, plan?.interval === "year" ? 12 : 1), autopay: false, notes: "" });
     }

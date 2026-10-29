@@ -1,7 +1,9 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Bell, CalendarClock, CreditCard, History, LayoutDashboard, Menu, PieChart, Search, Settings, Shapes, X } from "lucide-react";
+import { LogOut, Bell, CalendarClock, CreditCard, History, LayoutDashboard, Menu, PieChart, Search, Settings, Shapes, X } from "lucide-react";
 import { getReminders } from "@/lib/planner.functions";
 import { QK } from "@/lib/format";
 
@@ -37,6 +39,16 @@ function NavLinks({ unread, onNav }: { unread: number; onNav?: () => void }) {
   );
 }
 
+function SignOut() {
+  const qc = useQueryClient(); const navigate = useNavigate();
+  return (
+    <button onClick={async () => { await qc.cancelQueries(); qc.clear(); await supabase.auth.signOut(); navigate({ to: "/auth", replace: true }); }}
+      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
+      <LogOut className="h-4 w-4" />Sign out
+    </button>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { data } = useQuery({ queryKey: [...QK.all, "reminders"], queryFn: () => getReminders() });
@@ -65,7 +77,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col gap-8 border-r border-border bg-sidebar p-5 lg:flex">
         {Brand}
         <NavLinks unread={unread} />
-        <p className="mt-auto text-xs text-muted-foreground">Prices in ₹ · tracking only</p>
+        <div className="mt-auto"><SignOut /><p className="mt-2 px-3 text-xs text-muted-foreground">Prices in ₹ · tracking only</p></div>
       </aside>
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card/90 px-4 py-3 backdrop-blur lg:hidden">
         {Brand}
@@ -83,6 +95,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="absolute right-0 top-0 h-full w-72 bg-card p-5 shadow-xl">
             <div className="mb-6 flex justify-end"><button onClick={() => setOpen(false)} aria-label="Close menu"><X className="h-5 w-5" /></button></div>
             <NavLinks unread={unread} onNav={() => setOpen(false)} />
+            <div className="mt-4 border-t border-border pt-4"><SignOut /></div>
           </div>
         </div>
       )}

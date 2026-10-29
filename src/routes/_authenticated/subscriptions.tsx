@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { dateLabel, daysLabel, inr, intervalLabel, QK } from "@/lib/format";
 
-export const Route = createFileRoute("/subscriptions")({
+export const Route = createFileRoute("/_authenticated/subscriptions")({
   head: () => ({ meta: [
     { title: "My Subscriptions — Subscription Planner" },
     { name: "description", content: "All your active subscriptions, sorted by price, with renewals and autopay status." },
