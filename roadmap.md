@@ -1,3 +1,4 @@
 # Roadmap
 - [x] Subscription Planner core pages, catalogue, data structures
-- [ ] Per-user accounts: email/password (no email verification) + Google sign-in
+- [x] Per-user accounts: email/password + Google
+- [ ] AI subscription image scanner
