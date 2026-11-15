@@ -12,8 +12,9 @@ import { addMonths, equivalents, intervalToMonths, todayISO, validateSub, type S
 import { createSubscription, updateSubscription } from "@/lib/planner.functions";
 import { inr, intervalLabel, dateLabel, QK } from "@/lib/format";
 
+export interface Prefill { serviceName?: string; category?: string; planName?: string; price?: number; interval?: string; renewal?: string; notes?: string }
 export type DialogTarget =
-  | { mode: "add"; service?: Service; planId?: string }
+  | { mode: "add"; service?: Service; planId?: string; prefill?: Prefill }
   | { mode: "edit"; sub: SubView };
 
 const OTHER = "__other";
@@ -43,6 +44,19 @@ export function SubscriptionDialog({ target, onClose }: { target: DialogTarget |
       setF({ serviceName: sv?.name ?? "", categorySel: sv ? categoryName(sv.categoryIds[0]!) : CATEGORIES[0]!.name, categoryOther: "",
         planSel: plan?.id ?? OTHER, planName: plan?.name ?? "", price: plan ? String(plan.price) : "", interval: plan?.interval ?? "month",
         months: "2", start: t, renewal: addMonths(t, plan?.interval === "year" ? 12 : 1), autopay: false, notes: "" });
+      const pf = target.prefill;
+      if (pf) setF((p) => {
+        const known = CATEGORIES.some((c) => c.name === pf.category);
+        const interval = pf.interval ?? p.interval;
+        const renewal = pf.renewal && pf.renewal > t ? pf.renewal : addMonths(t, intervalToMonths(interval));
+        const start = pf.renewal && pf.renewal > t ? addMonths(renewal, -intervalToMonths(interval)) : t;
+        return { ...p,
+          serviceName: sv ? p.serviceName : pf.serviceName ?? p.serviceName,
+          categorySel: sv || !pf.category ? p.categorySel : known ? pf.category : OTHER, categoryOther: !sv && pf.category && !known ? pf.category : p.categoryOther,
+          planSel: sv && target.planId && target.planId !== "__none" ? p.planSel : OTHER,
+          planName: sv && target.planId && target.planId !== "__none" ? p.planName : pf.planName ?? p.planName,
+          price: pf.price != null ? String(pf.price) : p.price, interval, start, renewal, notes: pf.notes ?? "" };
+      });
     }
   }, [target]);
 
