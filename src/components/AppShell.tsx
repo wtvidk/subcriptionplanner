@@ -3,13 +3,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { LogOut, Bell, CalendarClock, CreditCard, History, LayoutDashboard, Menu, PieChart, Search, Settings, Shapes, X } from "lucide-react";
+import { ScanLine, LogOut, Bell, CalendarClock, CreditCard, History, LayoutDashboard, Menu, PieChart, Search, Settings, Shapes, X } from "lucide-react";
 import { getReminders } from "@/lib/planner.functions";
 import { QK } from "@/lib/format";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/browse", label: "Browse Services", icon: Search },
+  { to: "/scan", label: "Scan Subscription", icon: ScanLine },
   { to: "/subscriptions", label: "My Subscriptions", icon: CreditCard },
   { to: "/categories", label: "Categories", icon: Shapes },
   { to: "/reminders", label: "Renewal Reminders", icon: CalendarClock },
