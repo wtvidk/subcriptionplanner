@@ -31,7 +31,9 @@ function pickPlan(s: Service, plan: string | null, price: number | null, billing
 }
 export function matchCatalogue(e: ScanExtract): ScanMatch[] {
   if (!e.service_name) return [];
-  return SERVICES.map((s) => ({ s, score: similarity(e.service_name!, s.name) }))
+  const w = e.service_name.split(/\s+/).filter(Boolean);
+  const variants = [e.service_name, ...w.map((_, i) => w.slice(0, i + 1).join(" "))];
+  return SERVICES.map((s) => ({ s, score: Math.max(...variants.map((v) => similarity(v, s.name))) }))
     .filter((x) => x.score >= 0.45).sort((a, b) => b.score - a.score).slice(0, 3)
     .map(({ s, score }) => { const p = pickPlan(s, e.plan_name, e.price, e.billing);
       return { serviceId: s.id, name: s.name, planId: p?.id ?? null, planName: p?.name ?? null, score: Math.round(score * 100) / 100, exact: score >= 0.95 }; });
